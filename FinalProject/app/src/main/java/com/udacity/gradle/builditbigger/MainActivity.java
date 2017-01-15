@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.joke.JokeTeller;
 import org.jokeactivity.JokeActivity;
 
 
@@ -45,11 +44,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        JokeTeller jokeTeller = new JokeTeller();
-        String joke = jokeTeller.getRandomJoke();
-        Intent intent = new Intent(this, JokeActivity.class );
-        intent.putExtra(INTENT_JOKE_KEY, joke);
-        this.startActivity(intent);
+        GetJokeAsyncTask getJokeAsynTask = new GetJokeAsyncTask(new Callback() {
+            @Override
+            public void onSuccess(String joke) {
+                Intent intent = new Intent( getApplicationContext(), JokeActivity.class);
+                intent.putExtra(INTENT_JOKE_KEY, joke);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+        getJokeAsynTask.execute( this);
+
     }
 
 }
